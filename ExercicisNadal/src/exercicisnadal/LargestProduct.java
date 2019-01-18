@@ -41,17 +41,23 @@ public class LargestProduct {
 
     /////////////////////////////////////////////////////////////////////////////
     public static boolean checkIn(int[] dir, int f, int c, int nProducts, int fmax, int cmax) {
-        int dfila = fmax-(f+dir[0]*nProducts);
-        int dcolumn = cmax-(c+dir[1]*nProducts);
-        if ((dfila < 0) || (dfila >= fmax)) {
+        int dfila = (f+dir[0]*nProducts);
+        int dcolumn = (c+dir[1]*nProducts);
+        
+        return ( ( dfila >= 0 ) && ( dfila < fmax ) ) && ( ( dcolumn >= 0 ) && ( dcolumn < cmax ) );
+
+        
+        //return ( ( dfila<0 ) || ( dfila>=fmax ) ) && ( ( dcolumn<0 ) || ( dcolumn >= cmax ) );
+       
+        /*if ((dfila < 0) || (dfila >= fmax)) {
             return false;
         }
 
         if ((dcolumn < 0) || (dcolumn >= cmax)) {
             return false;
-        }
+        }*/
 
-        return true;
+        //return true;
     }
 
 ///////////////////////////////////////////////////
