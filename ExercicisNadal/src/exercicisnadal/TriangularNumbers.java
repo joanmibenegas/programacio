@@ -6,17 +6,25 @@ public class TriangularNumbers {
         int resultat = 0;
         int i = 1;
         int j = 2;
-        boolean trobat = false;
-        while (!trobat) {
-            if (divisors(i) > n) {
+        //boolean trobat = false;
+       // while (!trobat) {
+        
+            for(;;){
+            if ( divisors(i) >= n )
+                return i;
+            
+            i+=j;
+            j++; }
+            
+            /*if (divisors(i) > n) {
                 resultat = i;
                 trobat = true;
             } else {
                 i += j;
                 j++;
             }
-        }
-        return resultat;
+        }*/
+        //return resultat;
     }
 
     public static int divisors(int n) {
