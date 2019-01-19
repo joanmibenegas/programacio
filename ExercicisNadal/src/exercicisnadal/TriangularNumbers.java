@@ -3,7 +3,7 @@ package exercicisnadal;
 
 public class TriangularNumbers {
     public static int trobarDivisors(int n){
-        int resultat = 0;
+        //int resultat = 0;
         int i = 1;
         int j = 2;
         //boolean trobat = false;
