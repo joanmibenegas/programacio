@@ -57,6 +57,28 @@ public class TPEditor {
     private JCheckBoxMenuItem mostrarBarraEines;
     private JCheckBoxMenuItem fixarBarraEines;
     private JCheckBoxMenuItem mostrarBarraEstat;
+    private JMenuItem mbItemUndo;
+    private JMenuItem mbItemRedo;
+    private JMenuItem mpItemUndo;
+    private JMenuItem mpItemRedo;
+          
+    //Instancies botons Undo/Redo
+    private JButton buttonUndo;
+    private JButton buttonRedo;
+
+    //Etiquetas    
+    private JLabel sbFilePath;//Ruta arxiu
+    private JLabel sbFileSize;//Tamany arxiu
+    private JLabel sbCaretPos;//Posicio cursor
+   
+    //Estat Document y document actual
+    private boolean hasChanged = false;
+    private File currentFile = null;
+    
+    //Instancies accions
+    private final EventHandler eventHandler;
+    private final ActionPerformer actionPerformer;
+    private final UndoManager undoManager; 
     
     
     public static void main(String[] args) {
