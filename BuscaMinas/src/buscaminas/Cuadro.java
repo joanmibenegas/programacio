@@ -10,6 +10,7 @@ public class Cuadro extends JButton {
     public Cuadro() {
         super();
         double random = Math.random();
+
         if (random > 0.75) {
             mina = true;
         }
