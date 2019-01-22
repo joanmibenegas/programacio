@@ -189,11 +189,15 @@ public class Finestra extends javax.swing.JFrame implements ActionListener{
         
         for(int f = 0;f<nFiles;f++){
             for(int c = 0;c<nCol;c++){
+                //double minim = (nFiles*nCol)*0.25;
                 Cuadro cuadrotemp = new Cuadro();
                 cuadrotemp.addActionListener(this);
                 if(cuadrotemp.estatMinat()){
                     contadorMines++;
                 }
+                /*if(contadorMines<minim){
+                    
+                }*/
                 cuadrotemp.setVisible(true);
                 this.pantalla_joc.add(cuadrotemp);
             }
