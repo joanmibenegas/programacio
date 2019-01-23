@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import buscaminas.Cuadro;
 import java.awt.Color;
+import javax.swing.ImageIcon;
 
 public class Finestra extends javax.swing.JFrame implements ActionListener{
     int contadorMines = 0;
@@ -19,7 +20,10 @@ public class Finestra extends javax.swing.JFrame implements ActionListener{
     
     public void actionPerformed(ActionEvent e){
         Cuadro cuadrotemp2 = (Cuadro)e.getSource();
+        ImageIcon image = new ImageIcon("mina.jpg");
         if(cuadrotemp2.estatMinat()){
+            //Demanar professor
+            cuadrotemp2.setRolloverIcon(image);
             javax.swing.JOptionPane.showMessageDialog(this, "BUM! Has perdut.");
             this.contadorTrobats = 0;
             this.pantalla_joc.removeAll();
