@@ -4,26 +4,32 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import buscaminas.Cuadro;
 import java.awt.Color;
+import java.nio.file.Paths;
 import javax.swing.ImageIcon;
 
 public class Finestra extends javax.swing.JFrame implements ActionListener{
     int contadorMines = 0;
     int numeroCuadros = 0;
     int contadorTrobats = 0;
+    String currentPath = Paths.get("").toAbsolutePath().toString();
     
-    /**
-     * Creates new form Finestra
-     */
+    
     public Finestra() {
+        System.out.println(currentPath);
         initComponents();
     }
-    
+    //Accions, click als botons
     public void actionPerformed(ActionEvent e){
         Cuadro cuadrotemp2 = (Cuadro)e.getSource();
-        ImageIcon image = new ImageIcon("mina.jpg");
+        int width = cuadrotemp2.getWidth()/2;
+        int height = cuadrotemp2.getHeight()/2;
+        
+        ImageIcon image = new ImageIcon(currentPath+"/src/images/mina.png");
+        ImageIcon imageEscalada = new ImageIcon(image.getImage().getScaledInstance(width, height, java.awt.Image.SCALE_DEFAULT));
+        //Comprovador si esta minat
         if(cuadrotemp2.estatMinat()){
-            //Demanar professor
-            cuadrotemp2.setRolloverIcon(image);
+            cuadrotemp2.setIcon(imageEscalada);
+            cuadrotemp2.setBackground(Color.red);
             javax.swing.JOptionPane.showMessageDialog(this, "BUM! Has perdut.");
             this.contadorTrobats = 0;
             this.pantalla_joc.removeAll();
@@ -60,9 +66,9 @@ public class Finestra extends javax.swing.JFrame implements ActionListener{
 
         jLabel2.setText("Columnes");
 
-        files.setText("Numero Files");
+        files.setText("1000");
 
-        cols.setText("Numero Columnes");
+        cols.setText("1000");
 
         jButton1.setText("Start");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
