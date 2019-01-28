@@ -5,38 +5,57 @@ import java.awt.event.ActionEvent;
 import buscaminas.Cuadro;
 import java.awt.Color;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import javax.swing.ImageIcon;
 
-public class Finestra extends javax.swing.JFrame implements ActionListener{
+public class Finestra extends javax.swing.JFrame implements ActionListener {
+
+    int numerofiles = 0;
+    int numerocols = 0;
     int contadorMines = 0;
     int numeroCuadros = 0;
     int contadorTrobats = 0;
+
+    //Dubte on posar-ho
+    int[][] direccions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+
     String currentPath = Paths.get("").toAbsolutePath().toString();
-    
-    
+
     public Finestra() {
         System.out.println(currentPath);
         initComponents();
     }
+
     //Accions, click als botons
-    public void actionPerformed(ActionEvent e){
-        Cuadro cuadrotemp2 = (Cuadro)e.getSource();
-        int width = cuadrotemp2.getWidth()/2;
-        int height = cuadrotemp2.getHeight()/2;
+    public void actionPerformed(ActionEvent e) {
+        Cuadro cuadrotemp2 = (Cuadro) e.getSource();
+        int width = cuadrotemp2.getWidth() / 2;
+        int height = cuadrotemp2.getHeight() / 2;
+
+        ImageIcon[] arrayNumeros = new ImageIcon[8];
+        ImageIcon image = new ImageIcon(currentPath + "/src/images/mina.png");
+        arrayNumeros[1] = new ImageIcon(currentPath +"/src/images/1.png");
+        arrayNumeros[2] = new ImageIcon(currentPath +"/src/images/2.png");
+        arrayNumeros[3] = new ImageIcon(currentPath +"/src/images/3.png");
+        arrayNumeros[4] = new ImageIcon(currentPath +"/src/images/4.png");
+        arrayNumeros[5] = new ImageIcon(currentPath +"/src/images/5.png");
+        arrayNumeros[6] = new ImageIcon(currentPath +"/src/images/6.png");
+        arrayNumeros[7] = new ImageIcon(currentPath +"/src/images/7.png");
+        arrayNumeros[8] = new ImageIcon(currentPath +"/src/images/8.png");
         
-        ImageIcon image = new ImageIcon(currentPath+"/src/images/mina.png");
         ImageIcon imageEscalada = new ImageIcon(image.getImage().getScaledInstance(width, height, java.awt.Image.SCALE_DEFAULT));
         //Comprovador si esta minat
-        if(cuadrotemp2.estatMinat()){
+        if (cuadrotemp2.estatMinat()) {
             cuadrotemp2.setIcon(imageEscalada);
             cuadrotemp2.setBackground(Color.red);
             javax.swing.JOptionPane.showMessageDialog(this, "BUM! Has perdut.");
             this.contadorTrobats = 0;
             this.pantalla_joc.removeAll();
         } else {
+            
             cuadrotemp2.setBackground(Color.GREEN);
             contadorTrobats++;
-            if((numeroCuadros-contadorMines)==contadorTrobats){
+            if ((numeroCuadros - contadorMines) == contadorTrobats) {
                 javax.swing.JOptionPane.showMessageDialog(this, "GG!");
                 this.pantalla_joc.removeAll();
             }
@@ -80,66 +99,66 @@ public class Finestra extends javax.swing.JFrame implements ActionListener{
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(files, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(cols, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 465, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addGap(52, 52, 52))))
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel2)
+                                        .addComponent(jLabel1))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(files, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(cols, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 465, Short.MAX_VALUE)
+                                                .addComponent(jButton1)
+                                                .addGap(52, 52, 52))))
         );
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(files, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(cols, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
-                .addContainerGap(40, Short.MAX_VALUE))
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel1)
+                                        .addComponent(files, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGap(18, 18, 18)
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(jLabel2)
+                                                        .addComponent(cols, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jButton1)))
+                                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout pantalla_jocLayout = new javax.swing.GroupLayout(pantalla_joc);
         pantalla_joc.setLayout(pantalla_jocLayout);
         pantalla_jocLayout.setHorizontalGroup(
-            pantalla_jocLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+                pantalla_jocLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 0, Short.MAX_VALUE)
         );
         pantalla_jocLayout.setVerticalGroup(
-            pantalla_jocLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 314, Short.MAX_VALUE)
+                pantalla_jocLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 314, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pantalla_joc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(pantalla_joc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pantalla_joc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(pantalla_joc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -186,34 +205,85 @@ public class Finestra extends javax.swing.JFrame implements ActionListener{
     }
 
     //Metode inici
-    private void iniciar(){
-        this.pantalla_joc.removeAll();
-        int nFiles , nCol;
+    private void iniciar() {
+        this.pantalla_joc.removeAll();//Borrar tot el tauler
+        int nFiles, nCol;
         nFiles = Integer.parseInt(this.files.getText());
         nCol = Integer.parseInt(this.cols.getText());
-        
-        this.pantalla_joc.setLayout(new java.awt.GridLayout(nFiles,nCol));
-        
-        this.numeroCuadros = nFiles*nCol;
+        numerofiles = nFiles;
+        numerocols = nCol;
+        boolean flag = false;
+
+        //Crear els botons de la la interficie
+        this.pantalla_joc.setLayout(new java.awt.GridLayout(nFiles, nCol));
+        this.numeroCuadros = nFiles * nCol;
         this.contadorMines = 0;
-        
-        for(int f = 0;f<nFiles;f++){
-            for(int c = 0;c<nCol;c++){
-                //double minim = (nFiles*nCol)*0.25;
+
+        int minim = (int) ((nFiles * nCol) * 0.1);
+
+        Cuadro[][] arraycuadro = new Cuadro[nFiles][nCol];
+        //Creador dels objectes botons
+        for (int f = 0; f < nFiles; f++) {
+            for (int c = 0; c < nCol; c++) {
+
                 Cuadro cuadrotemp = new Cuadro();
+                arraycuadro[f][c] = cuadrotemp;
                 cuadrotemp.addActionListener(this);
-                if(cuadrotemp.estatMinat()){
+                if (cuadrotemp.estatMinat()) {
                     contadorMines++;
                 }
-                /*if(contadorMines<minim){
-                    
-                }*/
+                while (c == nCol - 1) {
+                    flag = true;
+                    break;
+                }
+
                 cuadrotemp.setVisible(true);
                 this.pantalla_joc.add(cuadrotemp);
             }
         }
+        //Comprovar el minim de mines
+
+            if (contadorMines < minim) {
+                int bombesAsignar = contadorMines - minim;
+                for (int i = 0; i < bombesAsignar; i++) {
+                    int calcFiles = (int) (Math.random()*nFiles);
+                    int calcCol = (int) (Math.random()*nCol);
+                    if(!arraycuadro[calcFiles][calcCol].estatMinat()){
+                        arraycuadro[calcFiles][calcCol].setMina(true);
+                    }
+                }
+            }
+//Comprovar el voltant
+        for (int f = 0; f < nFiles; f++) {
+            for (int c = 0; c < nCol; c++) {
+                int contadorBombesDevora = 0;
+                for (int i = 0; i < direccions.length; i++) {
+                    if (comprovarDireccions(arraycuadro, direccions[i], nFiles, nCol, f, c)) {
+                        contadorBombesDevora++;
+                    }
+                }
+                arraycuadro[f][c].setMinesProximes(contadorBombesDevora);
+            }
+
+        }
     }
-    
+
+    private static boolean comprovarDireccions(Cuadro[][] posCuadro, int[] dirs, int nFiles, int nCol, int fAct, int cAct) {
+        int dfila = (fAct + dirs[0]);
+        int dcolumn = (cAct + dirs[1]);
+        boolean avançar = ((dfila >= 0) && (dfila < nFiles)) && ((dcolumn >= 0) && (dcolumn < nCol));
+        boolean bomba = false;
+
+        if (avançar) {
+            if (posCuadro[dfila][dcolumn].estatMinat()) {
+                bomba = true;
+            }
+        }
+
+        return bomba;
+    }
+//Fi de comprovar el voltant
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField cols;
     private javax.swing.JTextField files;
