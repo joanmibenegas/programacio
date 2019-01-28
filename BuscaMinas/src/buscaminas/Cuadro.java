@@ -7,7 +7,9 @@ public class Cuadro extends JButton {
 
     private boolean mina = false; //Sera true si conté una mina
     private int minesProximes = 0;
-
+    private int fila = 0;
+    private int columna = 0;
+    
     public Cuadro() {
         super();
         double random = Math.random();
@@ -24,9 +26,25 @@ public class Cuadro extends JButton {
     public void setMinesProximes(int minesProximes){
         this.minesProximes = minesProximes;
     }
+    
+    public int getMinesProximes(){
+        return minesProximes;
+    }
 
     public void setMina (boolean a){
         this.mina = true;
     }
     
+    public void setPos (int f, int c){
+        this.fila = f;
+        this.columna = c;
+    }
+    
+    public int getFila(){
+        return fila;
+    }
+    
+    public int getColumna() {
+        return columna;
+    }
 }
