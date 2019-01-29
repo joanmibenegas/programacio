@@ -5,11 +5,12 @@ import java.awt.event.ActionEvent;
 import buscaminas.Cuadro;
 import java.awt.Color;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.ImageIcon;
 
 public class Finestra extends javax.swing.JFrame implements ActionListener {
-    
+
     int numerofiles = 0;
     int numerocols = 0;
     int contadorMines = 0;
@@ -17,14 +18,15 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
     int contadorTrobats = 0;
     Cuadro[][] cuadro = null;
     ImageIcon[] arrayNumeros = new ImageIcon[8];
+    ArrayList<Boolean> checkComprovat = new ArrayList<Boolean>();
+    ArrayList<Cuadro> check = new ArrayList<Cuadro>();
 
     //Dubte on posar-ho
     int[][] direccions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
-    
+
     String currentPath = Paths.get("").toAbsolutePath().toString();
-    
+
     public Finestra() {
-        System.out.println(currentPath);
         initComponents();
     }
 
@@ -41,7 +43,7 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        
+
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -49,24 +51,24 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
         cols = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         pantalla_joc = new javax.swing.JPanel();
-        
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        
+
         jLabel1.setText("Files:");
-        
+
         jLabel2.setText("Columnes");
-        
+
         files.setText("1000");
-        
+
         cols.setText("1000");
-        
+
         jButton1.setText("Start");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
-        
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -105,7 +107,7 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
                                                 .addComponent(jButton1)))
                                 .addContainerGap(40, Short.MAX_VALUE))
         );
-        
+
         javax.swing.GroupLayout pantalla_jocLayout = new javax.swing.GroupLayout(pantalla_joc);
         pantalla_joc.setLayout(pantalla_jocLayout);
         pantalla_jocLayout.setHorizontalGroup(
@@ -116,7 +118,7 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
                 pantalla_jocLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGap(0, 314, Short.MAX_VALUE)
         );
-        
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -131,7 +133,7 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(pantalla_joc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -184,7 +186,7 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
         numerofiles = nFiles;
         numerocols = nCol;
         boolean flag = false;
-        
+
         arrayNumeros[0] = new ImageIcon(currentPath + "/src/images/1.png");
         arrayNumeros[1] = new ImageIcon(currentPath + "/src/images/2.png");
         arrayNumeros[2] = new ImageIcon(currentPath + "/src/images/3.png");
@@ -197,14 +199,15 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
         this.pantalla_joc.setLayout(new java.awt.GridLayout(nFiles, nCol));
         this.numeroCuadros = nFiles * nCol;
         this.contadorMines = 0;
-        
+
         int minim = (int) ((nFiles * nCol) * 0.1);
-        
+        int maxim = minim + 1;
+
         Cuadro[][] arraycuadro = new Cuadro[nFiles][nCol];
         //Creador dels objectes botons
         for (int f = 0; f < nFiles; f++) {
             for (int c = 0; c < nCol; c++) {
-                
+
                 Cuadro cuadrotemp = new Cuadro();
                 cuadrotemp.setPos(f, c);
                 arraycuadro[f][c] = cuadrotemp;
@@ -216,7 +219,7 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
                     flag = true;
                     break;
                 }
-                
+
                 cuadrotemp.setVisible(true);
                 this.pantalla_joc.add(cuadrotemp);
             }
@@ -234,6 +237,18 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
                 }
             }
         }
+        if (contadorMines > maxim) {
+            int bombesLlevar = contadorMines - maxim;
+            int i = 0;
+            while (i < bombesLlevar) {
+                int calcFiles = (int) (Math.random() * nFiles);
+                int calcCol = (int) (Math.random() * nCol);
+                if (arraycuadro[calcFiles][calcCol].estatMinat()) {
+                    arraycuadro[calcFiles][calcCol].setMina(false);
+                    i++;
+                }
+            }
+        }
 //Comprovar el voltant
         for (int f = 0; f < nFiles; f++) {
             for (int c = 0; c < nCol; c++) {
@@ -245,50 +260,56 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
                 }
                 arraycuadro[f][c].setMinesProximes(contadorBombesDevora);
             }
-            
+
         }
     }
-    
+
     private static boolean comprovarDireccions(Cuadro[][] posCuadro, int[] dirs, int nFiles, int nCol, int fAct, int cAct) {
         int dfila = (fAct + dirs[0]);
         int dcolumn = (cAct + dirs[1]);
         boolean avançar = ((dfila >= 0) && (dfila < nFiles)) && ((dcolumn >= 0) && (dcolumn < nCol));
         boolean bomba = false;
-        
+
         if (avançar) {
             if (posCuadro[dfila][dcolumn].estatMinat()) {
                 bomba = true;
             }
         }
-        
+
         return bomba;
     }
-    
-    private boolean comprovarDireccio(int[] dirs, int f, int c) {
+
+    private void comprovarDireccio(int[] dirs, int f, int c, int i) {
         int dfila = (f + dirs[0]);
         int dcolumn = (c + dirs[1]);
-        boolean avançar = ((dfila >= 0) && (dfila < numerofiles)) && ((dcolumn >= 0) && (dcolumn < numerocols));
-        
-        if (avançar) {
-            if (cuadro[dfila][dcolumn].getMinesProximes() == 0) {
-                cuadro[dfila][dcolumn].setBackground(Color.GREEN);
-                for (int fa = 0; fa < direccions[0].length; fa++) {
-                    Cuadro cuadrotemp2 = cuadro[dfila + direccions[fa][0]][dcolumn + direccions[fa][1]];
-                    int width = cuadrotemp2.getWidth()/2;
-                    int height = cuadrotemp2.getHeight()/2;
-                    int mprox = cuadrotemp2.getMinesProximes();
-                    if(mprox!=0){
-                        ImageIcon numeroEscalat = new ImageIcon(arrayNumeros[mprox - 1].getImage().getScaledInstance(width, height, java.awt.Image.SCALE_DEFAULT));
-                        cuadrotemp2.setBackground(Color.GREEN);
-                        cuadrotemp2.setIcon(numeroEscalat);
-                    } else {
-                        cuadrotemp2.setBackground(Color.GREEN);
-                    }
-                    
-                }
-            } 
+        boolean avançar = false;
+        if (((dfila >= 0) && (dfila < numerofiles)) && ((dcolumn >= 0) && (dcolumn < numerocols))) {
+            avançar = true;
         }
-        return true;
+
+        if (avançar) {
+            Cuadro cuadrotemp = cuadro[dfila][dcolumn];
+            int width = cuadrotemp.getWidth() / 2;
+            int height = cuadrotemp.getHeight() / 2;
+            if (cuadro[f][c].getMinesProximes() == 0) {
+                cuadrotemp.setBackground(Color.GREEN);
+                if (cuadrotemp.getMinesProximes() != 0) {
+                    ImageIcon numeroEscalat = new ImageIcon(arrayNumeros[(cuadrotemp.getMinesProximes()) - 1].getImage().getScaledInstance(width, height, java.awt.Image.SCALE_DEFAULT));
+                    cuadrotemp.setIcon(numeroEscalat);
+                } else {
+                    boolean comprovar = false;
+                    for (int j = 0; j < check.size(); j++) {
+                        if (cuadrotemp == check.get(j)) {
+                                comprovar = true;
+                        }
+                    }
+                    if(!comprovar){
+                        check.add(cuadrotemp);
+                        cuadrotemp.setBackground(Color.GREEN);
+                    }
+                }
+            }
+        }
     }
 //Fi de comprovar el voltant
 
@@ -296,7 +317,7 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
         Cuadro cuadrotemp2 = (Cuadro) e.getSource();
         int width = cuadrotemp2.getWidth() / 2;
         int height = cuadrotemp2.getHeight() / 2;
-        
+
         ImageIcon image = new ImageIcon(currentPath + "/src/images/mina.png");
         ImageIcon imageEscalada = new ImageIcon(image.getImage().getScaledInstance(width, height, java.awt.Image.SCALE_DEFAULT));
         //Comprovador si esta minat
@@ -321,24 +342,28 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
                 cuadrotemp2.setBackground(Color.GREEN);
             }
             contadorTrobats++;
-            int a = 1;
-            int expfila = cuadrotemp2.getFila();
-            int expcolumna = cuadrotemp2.getColumna();
-            firstloop:
-            for (int i = 0; i < a; i++) {
-                a++;
+
+            //Comprovar el voltant si cuadrotemp2 == 0
+            check.add(cuadrotemp2);
+            checkComprovat.add(false);
+            for (int i = 0; i < check.size(); i++) {
+                if (check.get(i).getMinesProximes() == 0) {
                 for (int d = 0; d < direccions.length; d++) {
-                    if (!comprovarDireccio(direccions[d], expfila, expcolumna)) {
-                        break firstloop;
+                   int expfila = check.get(i).getFila();
+                   int expcolumna = check.get(i).getColumna();
+                   comprovarDireccio(direccions[d], expfila, expcolumna, i);
+                   
                     }
                 }
             }
-            
+            check.clear();
+
             if ((numeroCuadros - contadorMines) == contadorTrobats) {
                 javax.swing.JOptionPane.showMessageDialog(this, "GG!");
                 this.pantalla_joc.removeAll();
             }
         }
+        
     }
     //EXPERIMENTS
 

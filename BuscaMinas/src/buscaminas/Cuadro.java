@@ -32,7 +32,7 @@ public class Cuadro extends JButton {
     }
 
     public void setMina (boolean a){
-        this.mina = true;
+        this.mina = a;
     }
     
     public void setPos (int f, int c){
