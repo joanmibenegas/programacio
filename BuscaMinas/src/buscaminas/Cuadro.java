@@ -9,6 +9,7 @@ public class Cuadro extends JButton {
     private int minesProximes = 0;
     private int fila = 0;
     private int columna = 0;
+    private boolean pitjat = false;
     
     public Cuadro() {
         super();
@@ -46,5 +47,11 @@ public class Cuadro extends JButton {
     
     public int getColumna() {
         return columna;
+    }
+    public void pitjarBoto(boolean a){
+        this.pitjat = a;
+    }
+    public boolean getPitjat(){
+        return pitjat;
     }
 }
