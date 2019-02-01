@@ -19,7 +19,6 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
     ImageIcon[] arrayNumeros = new ImageIcon[8];
     ArrayList<Cuadro> check = new ArrayList<>();
     int[][] direccions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
-
     String currentPath = Paths.get("").toAbsolutePath().toString();
 
     public Finestra() {
@@ -59,7 +58,7 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
         cols.setText("10");
 
         jButton1.setText("Start");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButton1.addActionListener(new ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
@@ -190,7 +189,7 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
         //Crear array de cuadros i els botons
         crearBotonsArray();
         //Comprovar el minim de mines
-        minimMaximMines();
+        asignarMines();
         //Comprovar el voltant
         asignarMinesProximes();
     }
@@ -220,9 +219,6 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
                 cuadrotemp.setPos(f, c);
                 arraycuadro[f][c] = cuadrotemp;
                 cuadrotemp.addActionListener(this);
-                if (cuadrotemp.estatMinat()) {
-                    contadorMines++;
-                }
                 cuadrotemp.setVisible(true);
                 this.pantalla_joc.add(cuadrotemp);
             }
@@ -230,10 +226,24 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
         cuadro = arraycuadro;
     }
 
-    private void minimMaximMines() {
-        int minim = (int) ((numerofiles * numerocols) * 0.1);
-        int maxim = minim + 1;
-        if (contadorMines < minim) {
+    private void asignarMines() {
+        int mines = (int) ((numerofiles * numerocols) * 0.1);
+        
+        for (int i = 0; i < mines ; i++) {
+            int f, c;
+            do{
+                f = (int)(Math.random()*numerofiles);
+                c = (int)(Math.random()*numerocols);
+            } while (cuadro[f][c].estatMinat());
+            
+            //Asignar una mina
+            cuadro[f][c].setMina(true);
+            contadorMines++;
+        }
+        /////////////////////////////////////////////////////////////////////////////
+        /////Abans de Refactoritzar         ////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////
+        /*if (contadorMines < minim) {
             int bombesAsignar = minim - contadorMines;
             for (int i = 0; i < bombesAsignar; i++) {
                 int calcFiles = (int) (Math.random() * numerofiles);
@@ -256,7 +266,10 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
                     i++;
                 }
             }
-        }
+        }*/
+        //////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////
     }
 
     private static boolean comprovarDireccions(Cuadro[][] posCuadro, int[] dirs, int nFiles, int nCol, int fAct, int cAct) {
@@ -364,10 +377,11 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
                 check.clear();
             }
             actualitzarContadorTrobats();
+            System.out.println(contadorMines);
             mirarSiGuany();
         }
     }
-
+    
     private void mirarSiGuany() {
         if ((numeroCuadros - contadorMines) == contadorTrobats) {
             javax.swing.JOptionPane.showMessageDialog(this, "GG!");

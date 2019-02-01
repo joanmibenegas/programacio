@@ -11,14 +11,6 @@ public class Cuadro extends JButton {
     private int columna = 0;
     private boolean pitjat = false;
     
-    public Cuadro() {
-        super();
-        double random = Math.random();
-
-        if (random > 0.75) {
-            mina = true;
-        }
-    }
 
     public boolean estatMinat() {
         return mina;
