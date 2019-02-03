@@ -2,25 +2,21 @@ package buscaminas;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import buscaminas.Cuadro;
 import java.awt.Color;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
 public class Finestra extends javax.swing.JFrame implements ActionListener {
-
     int numerofiles = 0;
     int numerocols = 0;
-    int contadorMines = 0;
-    int numeroCuadros = 0;
-    int contadorTrobats = 0;
     Cuadro[][] cuadro = null;
     ImageIcon[] arrayNumeros = new ImageIcon[8];
     ArrayList<Cuadro> check = new ArrayList<>();
     int[][] direccions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
     String currentPath = Paths.get("").toAbsolutePath().toString();
-
+    Partida p = null;
+    
     public Finestra() {
         initComponents();
     }
@@ -167,125 +163,59 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Finestra().setVisible(true);
+                Finestra f = new Finestra();
+                f.setVisible(true);
             }
         });
     }
 
     //Metode inici
-    private void iniciar() {  
-        this.pantalla_joc.removeAll();//Borrar tot el tauler
-        this.contadorTrobats = 0;
-        //Obtenir el numero de files i columnes i declararles com atribut
-        numerofiles = Integer.parseInt(this.files.getText());
-        numerocols = Integer.parseInt(this.cols.getText());
-        //Crear el layout
-        this.pantalla_joc.setLayout(new java.awt.GridLayout(numerofiles, numerocols));
-        this.numeroCuadros = numerofiles * numerocols;
-        this.contadorMines = 0;
-        
+    private void iniciar() {
+        p = new Partida();
+        //Configurar Layout Inicio
+        configInicial();
         //Establir foto dels numeros
         establecerFotoNumeros();
         //Crear array de cuadros i els botons
         crearBotonsArray();
         //Comprovar el minim de mines
-        asignarMines();
+        p.asignarMines();
         //Comprovar el voltant
-        asignarMinesProximes();
+        p.asignarMinesProximes();
     }
 
-    //Asignar Mines Proximes
-    private void asignarMinesProximes() {
-        for (int f = 0; f < numerofiles; f++) {
-            for (int c = 0; c < numerocols; c++) {
-                int contadorBombesDevora = 0;
-                for (int i = 0; i < direccions.length; i++) {
-                    if (comprovarDireccions(cuadro, direccions[i], numerofiles, numerocols, f, c)) {
-                        contadorBombesDevora++;
-                    }
-                }
-                cuadro[f][c].setMinesProximes(contadorBombesDevora);
-            }
 
-        }
+
+    //Config Inicial
+    private void configInicial() {
+        this.pantalla_joc.removeAll();//Borrar tot el tauler
+        //Obtenir el numero de files i columnes i declararles com atribut
+        numerofiles = Integer.parseInt(this.files.getText());
+        numerocols = Integer.parseInt(this.cols.getText());
+        //Crear el layout
+        this.pantalla_joc.setLayout(new java.awt.GridLayout(numerofiles, numerocols));
     }
-
-    //Crear array i botons
+    /////////////////////////
+    //Crear array i botons///
+    /////////////////////////
     private void crearBotonsArray() {
-        Cuadro[][] arraycuadro = new Cuadro[numerofiles][numerocols];
-        for (int f = 0; f < numerofiles; f++) {
-            for (int c = 0; c < numerocols; c++) {
-                Cuadro cuadrotemp = new Cuadro();
-                cuadrotemp.setPos(f, c);
-                arraycuadro[f][c] = cuadrotemp;
-                cuadrotemp.addActionListener(this);
-                cuadrotemp.setVisible(true);
-                this.pantalla_joc.add(cuadrotemp);
-            }
-        }
-        cuadro = arraycuadro;
-    }
-
-    private void asignarMines() {
-        int mines = (int) ((numerofiles * numerocols) * 0.1);
         
-        for (int i = 0; i < mines ; i++) {
-            int f, c;
-            do{
-                f = (int)(Math.random()*numerofiles);
-                c = (int)(Math.random()*numerocols);
-            } while (cuadro[f][c].estatMinat());
+        cuadro = p.crearBotonsArray(numerofiles,numerocols);
+        configCuadro();
+    }
+
+    public void configCuadro() {
+        for (int i = 0; i < cuadro.length; i++) {
+            for (int j = 0; j < cuadro.length; j++) {
+                cuadro[i][j].addActionListener(this);
+                cuadro[i][j].setVisible(true);
+                this.pantalla_joc.add(cuadro[i][j]);
+            }
             
-            //Asignar una mina
-            cuadro[f][c].setMina(true);
-            contadorMines++;
         }
-        /////////////////////////////////////////////////////////////////////////////
-        /////Abans de Refactoritzar         ////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////
-        /*if (contadorMines < minim) {
-            int bombesAsignar = minim - contadorMines;
-            for (int i = 0; i < bombesAsignar; i++) {
-                int calcFiles = (int) (Math.random() * numerofiles);
-                int calcCol = (int) (Math.random() * numerocols);
-                if (!cuadro[calcFiles][calcCol].estatMinat()) {
-                    cuadro[calcFiles][calcCol].setMina(true);
-                    contadorMines++;
-                }
-            }
-        }
-        if (contadorMines > maxim) {
-            int bombesLlevar = contadorMines - maxim;
-            int i = 0;
-            while (i < bombesLlevar) {
-                int calcFiles = (int) (Math.random() * numerofiles);
-                int calcCol = (int) (Math.random() * numerocols);
-                if (cuadro[calcFiles][calcCol].estatMinat()) {
-                    cuadro[calcFiles][calcCol].setMina(false);
-                    contadorMines--;
-                    i++;
-                }
-            }
-        }*/
-        //////////////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////////////////////
     }
 
-    private static boolean comprovarDireccions(Cuadro[][] posCuadro, int[] dirs, int nFiles, int nCol, int fAct, int cAct) {
-        int dfila = (fAct + dirs[0]);
-        int dcolumn = (cAct + dirs[1]);
-        boolean avançar = ((dfila >= 0) && (dfila < nFiles)) && ((dcolumn >= 0) && (dcolumn < nCol));
-        boolean bomba = false;
-
-        if (avançar) {
-            if (posCuadro[dfila][dcolumn].estatMinat()) {
-                bomba = true;
-            }
-        }
-
-        return bomba;
-    }
+//////////////////////////////////////////////////////
 
     private void comprovarDireccio(int[] dirs, int f, int c, int i) {
         int dfila = (f + dirs[0]);
@@ -335,11 +265,11 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
         ImageIcon image = new ImageIcon(currentPath + "/src/images/mina.png");
         ImageIcon imageEscalada = new ImageIcon(image.getImage().getScaledInstance(width, height, java.awt.Image.SCALE_DEFAULT));
         //Comprovar si esta minat
-        comprovarSiMina(cuadrotemp, imageEscalada);
+        comprovarCasella(cuadrotemp, imageEscalada);
     }
 
     //Comprovador si minat
-    private void comprovarSiMina(Cuadro cuadrotemp, ImageIcon imageEscalada) {
+    private void comprovarCasella(Cuadro cuadrotemp, ImageIcon imageEscalada) {
         int width = cuadrotemp.getWidth() / 2;
         int height = cuadrotemp.getHeight() / 2;
         if (cuadrotemp.estatMinat()) {
@@ -352,7 +282,6 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
                 }
             }
             javax.swing.JOptionPane.showMessageDialog(this, "BUM! Has perdut.");
-            this.contadorTrobats = 0;
             this.pantalla_joc.removeAll();
         } else {
             //Si te mines devora
@@ -361,7 +290,6 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
                 cuadrotemp.setBackground(Color.GREEN);
                 cuadrotemp.setIcon(numeroEscalat);
                 cuadrotemp.pitjarBoto(true);
-                actualitzarContadorTrobats();
             } else {//Si no en te
                 cuadrotemp.setBackground(Color.GREEN);
                 check.add(cuadrotemp);
@@ -376,33 +304,19 @@ public class Finestra extends javax.swing.JFrame implements ActionListener {
                 }
                 check.clear();
             }
-            actualitzarContadorTrobats();
-            System.out.println(contadorMines);
+            p.actualitzarContadorTrobats();
             mirarSiGuany();
         }
     }
-    
+
     private void mirarSiGuany() {
-        if ((numeroCuadros - contadorMines) == contadorTrobats) {
+        if (p.mirarSiGuany()) {
             javax.swing.JOptionPane.showMessageDialog(this, "GG!");
             this.pantalla_joc.removeAll();
         }
     }
 
-    private void actualitzarContadorTrobats() {
-        int tempContadorTrobats = 0;
-        for (int i = 0; i < cuadro.length; i++) {
-            for (int j = 0; j < cuadro.length; j++) {
-                if (cuadro[i][j].getPitjat()) {
-                    tempContadorTrobats++;
 
-                }
-            }
-        }
-        int calc = tempContadorTrobats - contadorTrobats;
-        contadorTrobats += calc;
-        tempContadorTrobats = 0;
-    }
 
     private void establecerFotoNumeros() {
         arrayNumeros[0] = new ImageIcon(currentPath + "/src/images/1.png");
